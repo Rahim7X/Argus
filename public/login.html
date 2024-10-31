@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARGUS - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch(`${window.location.origin}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('authToken', data.encodedCredentials);
+                alert('Login successful!');
+                window.location.href = 'dashboard.html';
+            } else {
+                console.error('Login failed');
+                alert('Login failed. Please check your credentials.');
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="flex justify-center items-center h-screen">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4">Login</h2>
+            <input type="text" id="username" placeholder="Username" class="mb-4 p-2 w-full rounded" style="color: black; background-color: white; border: 1px solid #ccc; padding: 10px; font-size: 16px;"/>
+            <input type="password" id="password" placeholder="Password" class="mb-4 p-2 w-full rounded" style="color: black; background-color: white; border: 1px solid #ccc; padding: 10px; font-size: 16px;" />
+            <button onclick="login()" class="bg-blue-500 text-white p-2 rounded">Login</button>
+        </div>
+    </div>
+</body>
+</html>

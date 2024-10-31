@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARGUS - View Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        async function fetchDetails() {
+            const token = localStorage.getItem('authToken');
+if (!token) {
+    // Redirect to login if not authenticated
+    window.location.href = 'login.html';
+    return;
+}
+
+const response = await fetch(`${window.location.origin}/api/xss-hits`, {
+    method: 'GET',
+    headers: { 'Authorization': `Basic ${token}` }
+});
+
+const detailsContainer = document.getElementById('details-container');
+
+if (response.ok) {
+    const data = await response.json();
+    detailsContainer.innerHTML = data.map(item => {
+        const loggedData = item.loggedData || {};  // Extract loggedData safely
+        const headers = loggedData.headers || {};
+        const imageData = loggedData['imageData'] ? `data:image/png;base64,${loggedData['imageData']}` : null;
+        const parsedBody = loggedData.body;
+        let viewLogs = {
+            clientIp: `${headers['client-ip'] || 'N/A'}`,
+            UserAgent: `${headers['user-agent'] || 'N/A'}`,
+            Cookies: `${JSON.parse(loggedData.body).cookies || 'N/A'}`,
+            LocalStorage: `${JSON.parse(loggedData.body).storage || 'N/A'}`,
+            Location: `${headers['x-nf-geo'] ? atob(headers['x-nf-geo']) : 'N/A'}`,
+            URL: `${loggedData.path || 'N/A'}`,
+            Method: `${loggedData.method || 'N/A'}`,
+            Dom: `${loggedData.body ? decodeURIComponent(JSON.parse(loggedData.body).document) : 'N/A'}`,
+            Image : `${loggedData.body ? decodeURIComponent(JSON.parse(loggedData.body).imageData) : 'N/A'}`,
+        };
+        
+        return `
+            <div class="bg-gray-700 p-4 rounded-lg mb-4" style="width: 70%; max-width: 1200px; margin: 0 auto;">
+                <h3 class="font-bold">Content:</h3>
+                <div class="bg-gray-600 p-3 rounded" style="max-height: 200px; overflow-y: auto; max-width: 100%;">
+                    ${escapeHtml(viewLogs.Dom) || 'N/A'}
+                </div>  
+                
+                <h3 class="font-bold mt-4">Metadata:</h3>
+                <p>IP: ${viewLogs.clientIp || 'N/A'}</p>
+                <p>User-Agent: ${viewLogs.UserAgent || 'N/A'}</p>
+                <p>Cookies: ${viewLogs.Cookies || 'N/A'}</p>
+                <p>Location: ${viewLogs.Location ? atob(headers['x-nf-geo']) : 'N/A'}</p>
+                <p>URL: ${viewLogs.URL || 'N/A'}</p>
+                <p>Method: ${viewLogs.Method || 'N/A'}</p>
+                <p>Timestamp: ${item.timestamp || 'N/A'}</p>
+                
+                ${viewLogs.Image ? `<img src="${viewLogs.Image}" alt="Logged Image" class="mt-4 rounded-lg" style="width: 300px;"/>` : '<p>No image available</p>'}
+            </div>
+            <br>
+        `;
+    }).join('');
+} else {
+    console.error('Failed to fetch details');
+    detailsContainer.innerHTML = `
+        <div class="bg-gray-700 p-4 rounded-lg">
+            <p>Error fetching details. Please try again later.</p>
+        </div>`;
+}
+
+        }
+
+        window.onload = fetchDetails;
+        async function deleteLog(event) {
+            event.preventDefault(); // Prevent the default anchor behavior
+
+const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
+
+if (!token) {
+    console.error("No auth token found.");
+    return; // Exit if no token is available
+}
+
+try {
+    const response = await fetch(`${window.location.origin}/api/delete-all`, {
+        method: 'GET',
+        headers: { 'Authorization': `Basic ${token}` }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    window.location.reload();
+    console.log(data); // Handle the data as needed
+} catch (error) {
+    console.error("Error fetching data:", error);
+}
+    }
+
+    function escapeHtml(html) {
+        const text = document.createElement('div');
+        text.textContent = html;
+        return text.innerHTML;
+    }
+</script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="flex">
+        <div class="w-64 bg-gray-800 h-screen p-5">
+            <header class="flex items-center justify-between">
+                <img src="img/logo.jpg" alt="ARGUS Logo" class="w-24" >
+            </header>
+            <nav class="mt-5">
+                <a href="index.html" class="block p-2 hover:bg-gray-700">Home</a>
+                <a href="login.html" class="block p-2 hover:bg-gray-700">Login</a>
+                <a href="dashboard.html" class="block p-2 hover:bg-gray-700">Dashboard</a>
+                <a href="view.html" class="block p-2 bg-gray-700">View Details</a>
+                <a href="#" class="block p-2 hover:bg-gray-700" onclick="deleteLog(event)">Delete Logs</a>
+            </nav>
+        </div>
+        <div class="flex-1 p-5">
+            <h2 class="text-2xl font-bold">Details</h2>
+            <div id="details-container">
+                <!-- Dynamic content will be injected here -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

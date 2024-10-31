@@ -1,0 +1,20 @@
+[build]
+    publish = "public"
+    command = "echo No build command"
+    node_bundler = "esbuild"
+
+[dev]
+    publish = "public"
+    node_bundler = "esbuild"
+
+[[redirects]]
+    from = "/api/*"
+    to = "/.netlify/functions/:splat"
+    status = 200
+
+
+[[redirects]]
+  # Catch-all redirect for other endpoints, serving 403.html
+  from = "/*"
+  to = "/hook.js"  # Set up a 403.html page in your public folder with the message
+  status = 200

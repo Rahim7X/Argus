@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARGUS - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        async function fetchDashboardData() {
+            const token = localStorage.getItem('authToken');
+if (!token) {
+    // Redirect to login if not authenticated
+    window.location.href = 'login.html';
+    return;
+}
+
+const response = await fetch(`${window.location.origin}/api/xss-hits`, {
+    method: 'GET',
+    headers: { 'Authorization': `Basic ${token}` }
+});
+
+const dataContainer = document.getElementById('data-container');
+
+if (response.ok) {
+    const data = await response.json();
+    dataContainer.innerHTML = data.map(item => {
+        const loggedData = item.loggedData || {};  // Extract loggedData safely
+        const parsedBody = loggedData.body;
+
+        let viewLogs = {
+            method: loggedData.method,
+            path: 'N/A', // Default value
+            origin: loggedData.headers.origin
+        };
+
+        // Attempt to decode and parse the body
+        try {
+            const decodedBody = decodeURIComponent(parsedBody);
+            console.log(decodedBody)
+            const jsonBody = JSON.parse(parsedBody);
+            viewLogs.path = jsonBody.url; // Update path if parsing is successful
+        } catch (error) {
+            console.error('Error parsing loggedData.body:', error);
+        }
+
+        return `
+            <div class="bg-gray-700 p-4 rounded-lg mb-4">
+                <h3 class="text-lg font-bold">Timestamp: ${new Date(item.timestamp).toLocaleString()}</h3>
+                <p><strong>Method:</strong> ${viewLogs.method || 'N/A'}</p>
+                <p><strong>URL:</strong> ${viewLogs.path || 'N/A'}</p>
+                <p><strong>Origin:</strong> ${viewLogs.origin || 'N/A'}</p>
+            </div>
+        `;
+    }).join('');
+} else {
+    console.error('Failed to fetch dashboard data');
+    dataContainer.innerHTML = `
+        <div class="bg-gray-700 p-4 rounded-lg">
+            <p>Error fetching data. Please try again later.</p>
+        </div>`;
+}
+        }
+
+        window.onload = fetchDashboardData;
+
+        async function deleteLog(event) {
+            event.preventDefault(); // Prevent the default anchor behavior
+
+const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
+
+if (!token) {
+    console.error("No auth token found.");
+    return; // Exit if no token is available
+}
+
+try {
+    const response = await fetch(`${window.location.origin}/api/delete-all`, {
+        method: 'GET',
+        headers: { 'Authorization': `Basic ${token}` }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    window.location.reload();
+    console.log(data); // Handle the data as needed
+} catch (error) {
+    console.error("Error fetching data:", error);
+}
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="flex">
+        <div class="w-64 bg-gray-800 h-screen p-5">
+            <header class="flex items-center justify-between">
+                <img src="img/logo.jpg" alt="ARGUS Logo" class="w-24">
+            </header>
+            <nav class="mt-5">
+                <a href="index.html" class="block p-2 hover:bg-gray-700">Home</a>
+                <a href="login.html" class="block p-2 hover:bg-gray-700">Login</a>
+                <a href="dashboard.html" class="block p-2 bg-gray-700">Dashboard</a>
+                <a href="view.html" class="block p-2 hover:bg-gray-700">View Details</a>
+                <a href="#" class="block p-2 hover:bg-gray-700" onclick="deleteLog(event)">Delete Logs</a>
+            </nav>
+        </div>
+        <div class="flex-1 p-5">
+            <h2 class="text-2xl font-bold">Dashboard Data</h2>
+            <div id="data-container">
+                <!-- Dynamic content will be injected here -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
