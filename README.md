@@ -1,6 +1,8 @@
 # Argus 
 
-![Logo](public/img/logo.jpg)
+<p align="center">
+  <img src="public/img/logo.jpg" alt="Logo" width="200"/>
+</p>
 
 ## Description
 
@@ -26,7 +28,7 @@ Follow these steps to install the project:
    ```
 3. Install the required dependencies:
    ```bash
-   npm install -g netlify-cli
+   npm install && npm install -g netlify-cli
    ```
 4. Create a firebase project and then create a new realtime databse
 5. Create a Firebase Service Account Key:
