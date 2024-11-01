@@ -35,7 +35,7 @@ Follow these steps to install the project:
 >In your Firebase project's settings, go to the "Service Accounts" tab.
 Create a new service account and grant it the necessary permissions to access your Realtime Database.
 Download the service account key as a JSON file.
-6. Open `Argus/netlify/functions/config.js` in a text editor and add the copied json in authData field 
+6. Open `Argus/netlify/functions/config.js` in a text editor and add the service account key as a JSON  in authData field 
 7. Also add your database url in targetUrl field
 8. Change the credentials (username and password) in  `Argus/netlify/functions/config.js`  
 8. Then run `netlify login` to log into your account , to test it locally run `netlify dev`
