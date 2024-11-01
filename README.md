@@ -20,7 +20,7 @@ Follow these steps to install the project:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/rahim7x/yourproject.git
+   git clone https://github.com/rahim7x/Argus.git
    ```
 2. Navigate to the project directory:
    ```bash
