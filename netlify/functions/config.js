@@ -2,5 +2,7 @@
 module.exports = {
     username: "argus",
     password: "argus",
-    authData: {  };
+    authData: {  },
+    targetUrl: ""
+};
   
