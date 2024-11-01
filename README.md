@@ -42,5 +42,5 @@ Download the service account key as a JSON file.
 9. Deploy the project by running `netlify deploy --prod`
 ## Usage
 
-Provide examples of how to use your project. Include code snippets or screenshots if necessary.
+Once deployed in netlify use any non existing endpoint of your Argus domain / Or Just copy exiting payloads from /index.html
 
