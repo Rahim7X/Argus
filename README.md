@@ -6,13 +6,13 @@
 
 ## Description
 
-A brief description of your project goes here. Explain what the project does, its purpose, and any relevant details.
+Arus is an interactive Blind XSS and SSRF testing suite that you can setup for free using firebase and netlify
 
 ## Features
 
-- Feature 1
-- Feature 2
-- Feature 3
+- HTTP request logs
+- Blind XSS : Fetch loaded dom
+- Blind XSS : Screenshot the vulnerable page
 
 ## Installation
 
@@ -38,7 +38,7 @@ Download the service account key as a JSON file.
 6. Open `Argus/netlify/functions/config.js` in a text editor and add the copied json in authData field 
 7. Also add your database url in targetUrl field
 8. Change the credentials (username and password) in  `Argus/netlify/functions/config.js`  
-8. Then run `netlify login` to log into your account 
+8. Then run `netlify login` to log into your account , to test it locally run `netlify dev`
 9. Deploy the project by running `netlify deploy --prod`
 ## Usage
 
