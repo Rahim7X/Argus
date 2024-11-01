@@ -6,7 +6,7 @@
 
 ## Description
 
-Arus is an interactive Blind XSS and SSRF testing suite that you can setup for free using firebase and netlify
+Arus is an interactive Blind XSS and SSRF testing tool that you can setup for free using firebase and netlify
 
 ## Features
 
