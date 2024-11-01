@@ -72,7 +72,7 @@ exports.handler = async (event) => {
     // Return status based on the response from targetUrl
     return {
       statusCode: response.status,
-      body: JSON.stringify({ message: "Request logged successfully", data: updatedData }),
+      body: JSON.stringify({ message: "Request logged successfully" }),
     };
   } catch (error) {
     return {
